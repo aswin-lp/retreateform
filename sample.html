@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task View & Code Release</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 50px;
+        }
+        .task-table th, .task-table td {
+            overflow: hidden;
+            /* Remove max-width and text-overflow properties */
+            word-wrap: break-word; /* Ensure text wraps within the cell */
+        }
+        .notice-board {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .download-link {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Task Status</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered task-table" id="taskTable">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Status</th>
+                                <th>Expected Date</th>
+                                <!-- Add more columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBody">
+                            <!-- Table body will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="notice-board" id="newReleaseBoard">
+                    <!-- New release notice board will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        // Replace 'YOUR_GOOGLE_SHEETS_CSV_LINK_HERE' with the link obtained from Google Sheets after publishing
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzyxxd4HYNiAfHNdx40BVmp-Z9j8kSUDJFv09aXSHE3oL-4wa4UsXGRtwA599q36C7kR7zG8HhXfqN/pub?output=csv';
+
+        fetch(csvUrl)
+            .then(response => response.text())
+            .then(csvData => {
+                const parsedData = Papa.parse(csvData, { header: true, dynamicTyping: true });
+                displayTaskStatus(parsedData.data);
+                displayNewRelease(parsedData.data[0]); // Assuming the new release data is the first row
+                console.log(parsedData)
+            })
+            .catch(error => console.error('Error fetching data:', error));
+
+        function displayTaskStatus(data) {
+            const taskTableBody = document.getElementById('taskTableBody');
+            taskTableBody.innerHTML = '';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row['Task']}</td>
+                    <td>${row['Status']}</td>
+                    <td>${row['Expected Date']}</td>
+                    <!-- Add more columns as needed -->
+                `;
+                taskTableBody.appendChild(tr);
+            });
+        }
+
+        function displayNewRelease(data) {
+            const newReleaseBoard = document.getElementById('newReleaseBoard');
+            newReleaseBoard.innerHTML = `
+                <h2>New Release</h2>
+                <p>Description: ${data['Release Notes']}</p>
+                <a href="${data['Jupyter File Link']}" class="btn btn-primary download-link" download>Download New Release Jupyter File</a>
+            `;
+        }
+    </script>
+</body>
+</html>
