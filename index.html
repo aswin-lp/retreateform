@@ -178,23 +178,36 @@
 
             const newReleaseBoard = document.getElementById('newReleaseBoard');
             if (latestRelease) {
-                newReleaseBoard.innerHTML = `
-                    <div class="release-box">
-                        <h2>New Release</h2><br>
-                        <p>Date: ${latestRelease['Release Date']}</p>
-                        <p>Description: ${latestRelease['Code Updates']}</p>
-                        <a href="${latestRelease['Link']}" class="btn-custom" download-link" download>Download New Release</a>
-                    </div>
-                `;
+                if (latestRelease['Link']) {
+                    newReleaseBoard.innerHTML = `
+                        <div class="release-box">
+                            <h2>New Release</h2><br>
+                            <p>Date: ${latestRelease['Release Date']}</p>
+                            <p>Description: ${latestRelease['Code Updates']}</p>
+                            <a href="${latestRelease['Link']}" class="btn-custom" download-link" download>Download New Release</a>
+                        </div>
+                    `;
+                } else {
+                    newReleaseBoard.innerHTML = `
+                        <div class="release-box">
+                            <h2>Upcoming Release</h2><br>
+                            <p>Date: ${latestRelease['Release Date']}</p>
+                            <p>Description: ${latestRelease['Code Updates']}</p>
+                            <p>Not deployed yet!</p>
+                            <p>Will be deployed soon</p>
+                        </div>
+                    `;
+                }
             } else {
                 newReleaseBoard.innerHTML = `
                     <div class="release-box">
-                        <h2>New Release</h2><br>
+                        <h2>Upcoming Release</h2><br>
                         <p>No new release available</p>
                     </div>
                 `;
             }
         }
+
 
 
         function displayPreviousReleases(data) {
