@@ -182,6 +182,8 @@
                     newReleaseBoard.innerHTML = `
                         <div class="release-box">
                             <h2>New Release</h2><br>
+                            <p>Vesion: ${latestRelease['Version']}</p><br>
+                            <p>PIP Pacakge Vesion: ${latestRelease['Package Version']}</p><br>
                             <p>Date: ${latestRelease['Release Date']}</p>
                             <p>Description: ${latestRelease['Code Updates']}</p>
                             <a href="${latestRelease['Link']}" class="btn-custom" download-link" download>Download New Release</a>
@@ -230,7 +232,7 @@
 
             const thead = document.createElement('thead');
             const headRow = document.createElement('tr');
-            headRow.innerHTML = `<th>Date</th><th>Code Updates</th><th>Download</th>`;
+            headRow.innerHTML = `<th>Date</th><th>Code Updates</th><th>Package Version</th><th>Version</th><th>Download</th>`;
             thead.appendChild(headRow);
             table.appendChild(thead);
 
@@ -244,6 +246,8 @@
                         row.innerHTML = `
                             <td>${date}</td>
                             <td>${release['Code Updates']}</td>
+                            <td>${release['Package Version']}</td>
+                            <td>${release['Version']}</td>
                             <td><a href="${release['Link']}" class="btn-custom" download><i class="fas fa-download"></i></a></td>
                         `;
                         tbody.appendChild(row);
