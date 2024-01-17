@@ -21,6 +21,9 @@
         background-color: #f7f7f7;
         color: #470f4a;
       }
+      .container{
+        max-width: 1440px;
+      }
       h1 {
         text-align: center;
         font-size: 50px;
@@ -94,6 +97,13 @@
         margin: 0 5px;
         cursor: pointer;
       }
+      #previousReleasesList table tbody tr td:nth-of-type(2){
+        display: flex;
+        flex-direction: column;
+        max-height: 209px;
+        min-height: 208px;
+        overflow: auto;
+      }
     </style>
   </head>
   <body>
@@ -137,7 +147,7 @@
               <!-- Be release details will be populated dynamically -->
             </div>
             <div class="pagination" id="beReleasePagination"></div><br><br>
-            
+            <!-- <a href="testcase.html" class="btn-custom" >Add Error Test cases</a> -->
   
           </div>
 
@@ -287,7 +297,7 @@
             if (date && release["Code Updates"] && release["Link"]) {
               const row = document.createElement("tr");
               row.innerHTML = `
-                    <td>${date}</td>
+                    <td >${date}</td>
                     <td>${release["Code Updates"]}</td>
                     <td>${release["Package Version"]}</td>
                     <td>${release["Version"]}</td>
