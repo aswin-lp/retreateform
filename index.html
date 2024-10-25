@@ -4,125 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Count</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
-
         /* General Body Styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f7f7f7;
+            background-color: #f0f4f8;
             color: #333;
             margin: 0;
             padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+    
+        .container-fluid {
+            padding: 30px;
+            width: 100vw; /* Set to full viewport width */
+            margin: 0; /* Remove auto margin to fill the screen */
+        }
+    
+        .row {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* Wrapper for the entire content */
-        .container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            grid-gap: 40px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #212121;
-            font-weight: 500;
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        h2, h3 {
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        /* Styling the form */
-        form {
-            display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             gap: 20px;
         }
-
+    
+        .col-md-4 {
+            flex: 1 1 calc(33.33% - 20px);
+            min-width: 280px;
+        }
+    
+        /* Add a media query for smaller screens */
+        @media (max-width: 768px) {
+            .col-md-4 {
+                flex: 1 1 100%;
+            }
+        }
+    
+        /* Other styles remain unchanged */
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+    
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+    
+        h1, h2, h3 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+    
+        /* Form styling */
+        form {
+            margin-bottom: 20px;
+        }
+    
         label {
             font-size: 1rem;
-            margin-bottom: 8px;
             font-weight: bold;
         }
-
+    
         input[type="text"], input[type="number"] {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
             font-size: 1rem;
             width: 100%;
-            background-color: #ffffff;
+            transition: border-color 0.3s;
         }
-
-        input:focus {
-            box-shadow: 0 0 0 2px #00796b;
+    
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #00796b;
+            outline: none;
         }
-
+    
         button {
-            padding: 14px;
+            padding: 10px;
             background-color: #00796b;
             color: white;
             font-size: 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
             letter-spacing: 0.5px;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
+    
         button:hover {
+            background-color: #005f57;
             transform: translateY(-2px);
         }
-
-        .btn-increment, .btn-decrement {
-            padding: 6px 12px;
-            font-size: 0.9rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-left: 3px;
-            margin-right: 3px;
-            font-weight: 500;
-        }
-
-        .btn-increment {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .btn-decrement {
-            background-color: #f44336;
-            color: white;
-        }
-
-        /* Price Container for the right section */
+    
+        /* Price container styling */
         .price-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            margin-top: 20px;
         }
-
+    
         .price-container ul {
             list-style: none;
             padding-left: 0;
         }
-
+    
         .price-container li {
             display: flex;
             justify-content: space-between;
@@ -130,137 +118,87 @@
             padding: 10px;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .price-container li:hover {
-            background-color: #f5f5f5;
-        }
-
-        .price-container input {
-            width: 100px;
-            padding: 6px;
-            text-align: right;
-            border: 1px solid #e0e0e0;
             border-radius: 6px;
-            font-size: 1rem;
-            background-color: #ffffff;
+            margin-bottom: 10px;
         }
-
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-            margin-top: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 12px;
-            background-color: #ffffff;
-        }
-
-        th {
-            background-color: #00796b;
-            color: white;
-            text-transform: uppercase;
-            font-weight: 500;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        td {
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        td.count-cell {
-            text-align: center;
-        }
-
+    
+        /* Total price styling */
         h3#totalPrice {
             text-align: right;
             font-size: 1.5rem;
             color: #00796b;
-            margin-top: 15px;
+            margin-top: 20px;
         }
-
-        /* Responsive adjustments */
+    
+        /* Responsive design */
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            table, .price-container li {
-                font-size: 0.9rem;
-            }
-
-            .price-container input {
-                width: 80px;
+            .col-md-4 {
+                flex: 1 1 100%;
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div>
-            <h1>Item Count</h1>
-
-            <form id="categoryForm">
-                <div>
-                    <label for="categoryName">Category Name:</label>
-                    <input type="text" id="categoryName" placeholder="Enter category name" required>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <h1>Item Count</h1>
+                    <form id="categoryForm">
+                        <div>
+                            <label for="categoryName">Category Name:</label>
+                            <input type="text" id="categoryName" placeholder="Enter category name" required>
+                        </div>
+                        <div>
+                            <label for="categoryCount">Count:</label>
+                            <input type="number" id="categoryCount" placeholder="Enter count" required min="0">
+                        </div>
+                        <br>
+                        <button type="submit">Add Category</button>
+                    </form>
                 </div>
-                <div>
-                    <label for="categoryCount">Count:</label>
-                    <input type="number" id="categoryCount" placeholder="Enter count" required>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <h2>Category Totals</h2>
+                    <table class="table table-striped" id="categoryTable">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Total Count</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamically populated rows will go here -->
+                        </tbody>
+                    </table>
+                    <h3 id="totalPrice">Total Price: Rs 0</h3>
                 </div>
-                <button type="submit">Add Category</button>
-            </form>
-
-            <h2>Category Totals</h2>
-            <table id="categoryTable">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Total Count</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
-            <h3 id="totalPrice">Total Price: Rs 0</h3>
-        </div>
-
-        <div class="price-container">
-            <h3>Item Prices</h3>
-            <ul id="priceList">
-            </ul>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <h2>Item Prices</h2>
+                    <ul id="priceList">
+                        <!-- Dynamically populated prices will go here -->
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Initialize an empty object to store categories, counts, and prices
         let categories = {};
 
+        // Function to update the category table
         function updateCategoryTable() {
             const tableBody = document.querySelector("#categoryTable tbody");
-            tableBody.innerHTML = '';
-            let totalPrice = 0;
+            tableBody.innerHTML = '';  // Clear previous rows
+            let totalPrice = 0;  // Initialize total price
 
+            // Loop through categories and create rows
             for (const category in categories) {
                 const row = document.createElement('tr');
                 const categoryCell = document.createElement('td');
@@ -270,26 +208,27 @@
 
                 categoryCell.textContent = category;
                 countCell.textContent = categories[category].count;
-                countCell.classList.add('count-cell');
 
+                // Price calculation
                 const price = categories[category].price || 0;
                 priceCell.textContent = `Rs ${price * categories[category].count}`;
                 totalPrice += price * categories[category].count;
 
+                // Create increment and decrement buttons
                 const incrementBtn = document.createElement('button');
                 incrementBtn.textContent = '+';
-                incrementBtn.classList.add('btn-increment');
+                incrementBtn.classList.add('btn-increment', 'btn', 'btn-success');
                 incrementBtn.addEventListener('click', function() {
-                    categories[category].count += 1;
+                    categories[category].count += 1;  // Increase count by 1
                     updateCategoryTable();
                 });
 
                 const decrementBtn = document.createElement('button');
                 decrementBtn.textContent = '-';
-                decrementBtn.classList.add('btn-decrement');
+                decrementBtn.classList.add('btn-decrement', 'btn', 'btn-danger');
                 decrementBtn.addEventListener('click', function() {
                     if (categories[category].count > 0) {
-                        categories[category].count -= 1;
+                        categories[category].count -= 1;  // Decrease count by 1
                         updateCategoryTable();
                     }
                 });
@@ -304,12 +243,14 @@
                 tableBody.appendChild(row);
             }
 
+            // Update the total price
             document.getElementById("totalPrice").textContent = `Total Price: Rs ${totalPrice}`;
         }
 
+        // Function to update the price list on the right side
         function updatePriceList() {
             const priceList = document.getElementById('priceList');
-            priceList.innerHTML = '';
+            priceList.innerHTML = ''; // Clear previous items
 
             for (const category in categories) {
                 const listItem = document.createElement('li');
@@ -317,9 +258,9 @@
 
                 const priceInput = document.createElement('input');
                 priceInput.type = 'number';
-                priceInput.value = categories[category].price || '';
-                priceInput.addEventListener('input', function () {
-                    categories[category].price = parseFloat(priceInput.value) || 0;
+                priceInput.placeholder = 'Price';  // Placeholder instead of default value
+                priceInput.addEventListener('change', function() {
+                    categories[category].price = parseFloat(priceInput.value);
                     updateCategoryTable();
                 });
 
@@ -328,15 +269,26 @@
             }
         }
 
-        document.getElementById("categoryForm").addEventListener("submit", function (event) {
+        // Form submission logic
+        document.getElementById("categoryForm").addEventListener("submit", function(event) {
             event.preventDefault();
+
             const categoryName = document.getElementById("categoryName").value;
             const categoryCount = parseInt(document.getElementById("categoryCount").value);
 
-            if (categoryName && categoryCount > 0) {
-                categories[categoryName] = { count: categoryCount, price: 0 };
+            if (categoryName && categoryCount >= 0) {
+                if (!categories[categoryName]) {
+                    categories[categoryName] = { count: categoryCount, price: 0 };
+                } else {
+                    categories[categoryName].count += categoryCount;
+                }
+
                 updateCategoryTable();
                 updatePriceList();
+
+                // Clear the input fields
+                document.getElementById("categoryName").value = '';
+                document.getElementById("categoryCount").value = 0;
             }
         });
     </script>
