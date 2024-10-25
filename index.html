@@ -48,7 +48,7 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4 , h5{
             color: #2c3e50;
             font-weight: 600;
             margin-bottom: 15px;
@@ -88,7 +88,6 @@
             font-weight: 500;
             letter-spacing: 0.5px;
             transition: background-color 0.3s, transform 0.3s;
-            width: 48%; /* Adjust width to fit two buttons in one row */
         }
 
         button:hover {
@@ -145,7 +144,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
-                    <h3>Add Items</h3>
+                    <h4>Add Items</h4>
                     <form id="categoryForm">
                         <div class="form-group">
                             <label for="categoryName">Item Name:</label>
@@ -164,7 +163,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <h2>Total</h2>
+                    <h4>Total</h4>
                     <table class="table table-striped" id="categoryTable">
                         <thead>
                             <tr>
@@ -178,12 +177,12 @@
                             <!-- Dynamically populated rows will go here -->
                         </tbody>
                     </table>
-                    <h3 id="totalPrice">Total Price: Rs 0</h3>
+                    <h5 id="totalPrice">Total Price: Rs 0</h5>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <h3>Item Prices</h3>
+                    <h4>Item Prices</h4>
                     <div class="price-container">
                         <!-- Dynamically populated prices will go here -->
                     </div>
