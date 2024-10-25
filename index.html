@@ -6,69 +6,69 @@
     <title>Item Count</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* General Body Styling */
+        :root {
+            --mobile-padding: 16px;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f0f4f8;
             color: #333;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
         }
-    
+
         .container-fluid {
-            padding: 30px;
-            width: 100vw; /* Set to full viewport width */
-            margin: 0; /* Remove auto margin to fill the screen */
+            padding: var(--mobile-padding);
+            width: 100vw;
+            margin: 0;
         }
-    
+
         .row {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
         }
-    
+
         .col-md-4 {
-            flex: 1 1 calc(33.33% - 20px);
+            flex: 1 1 calc(50% - 10px);
             min-width: 280px;
         }
-    
-        /* Add a media query for smaller screens */
+
         @media (max-width: 768px) {
             .col-md-4 {
                 flex: 1 1 100%;
             }
         }
-    
-        /* Other styles remain unchanged */
+
         .card {
             background-color: white;
-            padding: 20px;
-            border-radius: 15px;
+            padding: 15px;
+            border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s ease;
         }
-    
+
         .card:hover {
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
-    
+
         h1, h2, h3 {
             color: #2c3e50;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-    
-        /* Form styling */
+
         form {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-    
+
         label {
             font-size: 1rem;
             font-weight: bold;
         }
-    
+
         input[type="text"], input[type="number"] {
             padding: 10px;
             border: 1px solid #bdc3c7;
@@ -77,12 +77,12 @@
             width: 100%;
             transition: border-color 0.3s;
         }
-    
+
         input[type="text"]:focus, input[type="number"]:focus {
             border-color: #00796b;
             outline: none;
         }
-    
+
         button {
             padding: 10px;
             background-color: #00796b;
@@ -95,45 +95,48 @@
             letter-spacing: 0.5px;
             transition: background-color 0.3s, transform 0.3s;
         }
-    
+
         button:hover {
             background-color: #005f57;
             transform: translateY(-2px);
         }
-    
-        /* Price container styling */
+
         .price-container {
-            margin-top: 20px;
+            margin-top: 15px;
         }
-    
-        .price-container ul {
-            list-style: none;
-            padding-left: 0;
+
+        .price-container div {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
         }
-    
-        .price-container li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin-bottom: 10px;
+
+        .price-container div:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
-    
-        /* Total price styling */
-        h3#totalPrice {
-            text-align: right;
-            font-size: 1.5rem;
-            color: #00796b;
-            margin-top: 20px;
-        }
-    
+
         /* Responsive design */
-        @media (max-width: 768px) {
-            .col-md-4 {
-                flex: 1 1 100%;
+        @media (max-width: 576px) {
+            .card {
+                padding: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+
+            input[type="text"], input[type="number"] {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+
+            h1, h2, h3 {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -145,15 +148,14 @@
                 <div class="card">
                     <h1>Item Count</h1>
                     <form id="categoryForm">
-                        <div>
+                        <div class="form-group">
                             <label for="categoryName">Category Name:</label>
                             <input type="text" id="categoryName" placeholder="Enter category name" required>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="categoryCount">Count:</label>
                             <input type="number" id="categoryCount" placeholder="Enter count" required min="0">
                         </div>
-                        <br>
                         <button type="submit">Add Category</button>
                     </form>
                 </div>
@@ -180,9 +182,9 @@
             <div class="col-md-4">
                 <div class="card">
                     <h2>Item Prices</h2>
-                    <ul id="priceList">
+                    <div class="price-container">
                         <!-- Dynamically populated prices will go here -->
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -249,23 +251,29 @@
 
         // Function to update the price list on the right side
         function updatePriceList() {
-            const priceList = document.getElementById('priceList');
-            priceList.innerHTML = ''; // Clear previous items
+            const priceContainer = document.querySelector('.price-container');
+            priceContainer.innerHTML = ''; // Clear previous items
 
             for (const category in categories) {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${category}: `;
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'price-item';
+
+                const categoryLabel = document.createElement('label');
+                categoryLabel.for = category;
+                categoryLabel.textContent = category + ': ';
 
                 const priceInput = document.createElement('input');
                 priceInput.type = 'number';
                 priceInput.placeholder = 'Price';  // Placeholder instead of default value
+                priceInput.id = category;
                 priceInput.addEventListener('change', function() {
-                    categories[category].price = parseFloat(priceInput.value);
+                    categories[this.id] = { count: categories[this.id].count, price: parseFloat(this.value) };
                     updateCategoryTable();
                 });
 
-                listItem.appendChild(priceInput);
-                priceList.appendChild(listItem);
+                priceDiv.appendChild(categoryLabel);
+                priceDiv.appendChild(priceInput);
+                priceContainer.appendChild(priceDiv);
             }
         }
 
