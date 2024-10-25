@@ -138,6 +138,55 @@
             h1, h2, h3 {
                 font-size: 1.1rem;
             }
+            .btn-increment, .btn-decrement {
+                margin-bottom: 10px; /* Add space below the buttons */
+            }
+
+            .card {
+                padding: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+
+            input[type="text"], input[type="number"] {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+
+            h1, h2, h3 {
+                font-size: 1.1rem;
+            }
+        }
+        .btn-increment, .btn-decrement {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-increment {
+            background-color: #28a745; /* Green color for increment */
+            color: white;
+        }
+
+        .btn-increment:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: translateY(-2px);
+        }
+
+        .btn-decrement {
+            background-color: #dc3545; /* Red color for decrement */
+            color: white;
+        }
+
+        .btn-decrement:hover {
+            background-color: #c82333; /* Darker red on hover */
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -216,10 +265,10 @@
                 priceCell.textContent = `${price * categories[category].count}`;
                 totalPrice += price * categories[category].count;
 
-                // Create increment button
+               // Create increment button
                 const incrementBtn = document.createElement('button');
                 incrementBtn.textContent = '+';
-                incrementBtn.classList.add('btn-increment', 'btn', 'btn-success');
+                incrementBtn.classList.add('btn-increment', 'btn');
                 incrementBtn.style.marginRight = '5px'; // Add space to the right
                 incrementBtn.addEventListener('click', function() {
                     categories[category].count += 1;  // Increase count by 1
@@ -229,7 +278,7 @@
                 // Create decrement button
                 const decrementBtn = document.createElement('button');
                 decrementBtn.textContent = '-';
-                decrementBtn.classList.add('btn-decrement', 'btn', 'btn-danger');
+                decrementBtn.classList.add('btn-decrement', 'btn');
                 decrementBtn.addEventListener('click', function() {
                     if (categories[category].count > 0) {
                         categories[category].count -= 1;  // Decrease count by 1
