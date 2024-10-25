@@ -146,30 +146,30 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
-                    <h1>Item Count</h1>
+                    <h2>Add Items</h2>
                     <form id="categoryForm">
                         <div class="form-group">
-                            <label for="categoryName">Category Name:</label>
+                            <label for="categoryName">Item Name:</label>
                             <input type="text" id="categoryName" placeholder="Enter category name" required>
                         </div>
                         <div class="form-group">
                             <label for="categoryCount">Count:</label>
                             <input type="number" id="categoryCount" placeholder="Enter count" required min="0">
                         </div>
-                        <button type="submit">Add Category</button>
+                        <button type="submit">Add Item</button>
                     </form>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <h2>Category Totals</h2>
+                    <h2>Total</h2>
                     <table class="table table-striped" id="categoryTable">
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>Total Count</th>
+                                <th>Item</th>
+                                <th>Count</th>
                                 <th>Price</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -213,18 +213,20 @@
 
                 // Price calculation
                 const price = categories[category].price || 0;
-                priceCell.textContent = `Rs ${price * categories[category].count}`;
+                priceCell.textContent = `${price * categories[category].count}`;
                 totalPrice += price * categories[category].count;
 
-                // Create increment and decrement buttons
+                // Create increment button
                 const incrementBtn = document.createElement('button');
                 incrementBtn.textContent = '+';
                 incrementBtn.classList.add('btn-increment', 'btn', 'btn-success');
+                incrementBtn.style.marginRight = '5px'; // Add space to the right
                 incrementBtn.addEventListener('click', function() {
                     categories[category].count += 1;  // Increase count by 1
                     updateCategoryTable();
                 });
 
+                // Create decrement button
                 const decrementBtn = document.createElement('button');
                 decrementBtn.textContent = '-';
                 decrementBtn.classList.add('btn-decrement', 'btn', 'btn-danger');
