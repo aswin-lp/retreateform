@@ -113,9 +113,9 @@
         }
 
         .btn-increment, .btn-decrement {
-            padding: 10px 15px; /* Slightly larger padding for buttons */
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 1.2rem; /* Increased font size */
+            font-size: 1rem;
             transition: background-color 0.3s, transform 0.3s;
         }
 
@@ -138,21 +138,6 @@
             background-color: #c82333; /* Darker red on hover */
             transform: translateY(-2px);
         }
-
-        /* Media Queries for Mobile View */
-        @media (max-width: 768px) {
-            h2, h3 {
-                font-size: 1.5rem; /* Adjust heading size */
-            }
-
-            input[type="text"], input[type="number"], button {
-                font-size: 1rem; /* Adjust input and button font size */
-            }
-
-            .btn-increment, .btn-decrement {
-                font-size: 1.2rem; /* Keep button size consistent */
-            }
-        }
     </style>
 </head>
 <body>
@@ -160,7 +145,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
-                    <h2>Add Items</h2>
+                    <h3>Add Items</h3>
                     <form id="categoryForm">
                         <div class="form-group">
                             <label for="categoryName">Item Name:</label>
@@ -198,7 +183,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <h2>Item Prices</h2>
+                    <h3>Item Prices</h3>
                     <div class="price-container">
                         <!-- Dynamically populated prices will go here -->
                     </div>
@@ -275,39 +260,71 @@
             document.getElementById("totalPrice").textContent = `Total Price: Rs ${totalPrice}`;
         }
 
-        // Event listener for the form submission
-        document.getElementById("categoryForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const categoryName = document.getElementById("categoryName").value;
-            const categoryCount = parseInt(document.getElementById("categoryCount").value, 10);
+        // Function to update the price list on the right side
+        function updatePriceList() {
+            const priceContainer = document.querySelector('.price-container');
+            priceContainer.innerHTML = ''; // Clear previous items
 
-            // If the category already exists, update its count
-            if (categories[categoryName]) {
-                categories[categoryName].count += categoryCount;  // Increment existing count
-            } else {
-                categories[categoryName] = {
-                    count: categoryCount,
-                    price: Math.floor(Math.random() * 100) // Generate random price for demonstration
-                };
+            for (const category in categories) {
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'price-item';
+
+                const categoryLabel = document.createElement('label');
+                categoryLabel.for = category;
+                categoryLabel.textContent = category + ': ';
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'number';
+                priceInput.placeholder = 'Enter price'; // No default value
+                priceInput.value = ''; // Start empty
+                priceInput.id = category;
+                priceInput.addEventListener('input', function() {
+                    categories[category].price = Number(priceInput.value);
+                    updateLocalStorage();
+                    updateCategoryTable();
+                });
+
+                priceDiv.appendChild(categoryLabel);
+                priceDiv.appendChild(priceInput);
+                priceContainer.appendChild(priceDiv);
             }
+        }
 
-            updateLocalStorage(); // Update local storage
-            updateCategoryTable(); // Refresh the table
+        // Form submission event
+        document.getElementById("categoryForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            const categoryName = document.getElementById("categoryName").value.trim();
+            const categoryCount = Number(document.getElementById("categoryCount").value);
+
+            // Add new category or update count if exists
+            if (categoryName && categoryCount >= 0) {
+                if (!categories[categoryName]) {
+                    categories[categoryName] = { count: categoryCount, price: 0 }; // Initialize price as 0
+                } else {
+                    categories[categoryName].count += categoryCount; // Increase existing count
+                }
+                updateLocalStorage(); // Save to local storage
+                updateCategoryTable(); // Refresh the table
+                updatePriceList(); // Refresh the price list
+            }
 
             // Clear input fields
             document.getElementById("categoryName").value = '';
             document.getElementById("categoryCount").value = '';
         });
 
-        // Event listener for the clear storage button
+        // Clear all categories
         document.getElementById("clearStorage").addEventListener("click", function() {
-            localStorage.removeItem('categories'); // Clear categories from local storage
-            categories = {}; // Reset categories
-            updateCategoryTable(); // Refresh the table
+            categories = {};
+            updateLocalStorage();
+            updateCategoryTable();
+            updatePriceList();
         });
 
-        // Initial call to update the table
+        // Initial population of table and price list
         updateCategoryTable();
+        updatePriceList();
     </script>
 </body>
 </html>
