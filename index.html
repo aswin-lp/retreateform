@@ -1,511 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Task View & Code Release</title>
-    <!-- Bootstrap CSS CDN -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      rel="stylesheet"
-    />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Count</title>
     <style>
-      /* Your existing CSS styles */
-      body {
-        font-family: Arial, sans-serif;
-        padding-top: 50px;
-        background-color: #f7f7f7;
-        color: #470f4a;
-      }
-      .container{
-        max-width: 1440px;
-      }
-      h1 {
-        text-align: center;
-        font-size: 50px;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-weight: bold;
-      }
-      h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        font-weight: bold;
-        text-decoration: underline;
-      }
-      .task-table th,
-      .task-table td {
-        overflow: hidden;
-        word-wrap: break-word;
-      }
-      .notice-board {
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        padding: 20px;
-        margin-bottom: 20px;
-      }
-      .download-link {
-        display: block;
-        margin-top: 10px;
-      }
-      /* Custom styles for the headings */
-      .heading-center {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .release-box {
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        padding: 15px;
-        margin-bottom: 20px;
-      }
-      .btn-custom {
-        background-color: #470f4a;
-        color: #ffffff;
-        border-radius: 5px;
-       
-        font-weight: bold;
-        font-size: 1.2rem;
-        padding: 10px 20px;
-        margin-top: 20px;
-        border: none;
-      }
-      .btn-custom:hover {
-        background-color: #5d1478; /* Darker shade of the primary color on hover */
-      }
-      .aicloud-heading {
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: bold;
-        font-size: 36px;
-        color: #470f4a;
-        text-decoration: underline;
-      }
-      .page-number {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        border: 1px solid #000;
-        text-align: center;
-        line-height: 30px;
-        margin: 0 5px;
-        cursor: pointer;
-      }
-      #previousReleasesList table tbody tr td:nth-of-type(2){
-        display: flex;
-        flex-direction: column;
-        max-height: 209px;
-        min-height: 208px;
-        overflow: auto;
-      }
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+        /* General Body Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Wrapper for the entire content */
+        .container {
+            background-color: white;
+            padding: 60px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-gap: 60px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #212121;
+            font-weight: 500;
+            font-size: 3rem;
+            margin-bottom: 40px;
+        }
+
+        h2, h3 {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        /* Styling the form */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            width: 100%;
+            background-color: #ffffff;
+        }
+
+        input:focus {
+            box-shadow: 0 0 0 2px #00796b;
+        }
+
+        button {
+            padding: 18px;
+            background-color: #00796b;
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Button styles for increment/decrement */
+        .btn-increment, .btn-decrement {
+            padding: 8px 16px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+
+        .btn-increment {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-decrement {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-increment:hover {
+            background-color: #388E3C;
+        }
+
+        .btn-decrement:hover {
+            background-color: #D32F2F;
+        }
+
+        /* Price Container for the right section */
+        .price-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .price-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .price-container li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .price-container li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .price-container input {
+            width: 100px;
+            padding: 8px;
+            text-align: right;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #ffffff;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 18px;
+            background-color: #ffffff;
+        }
+
+        th {
+            background-color: #00796b;
+            color: white;
+            text-transform: uppercase;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        td.count-cell {
+            text-align: center;
+        }
+
+        /* Total price styling */
+        h3#totalPrice {
+            text-align: right;
+            font-size: 1.8rem;
+            color: #00796b;
+            margin-top: 20px;
+        }
+
+        /* Global transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            table {
+                font-size: 0.95rem;
+            }
+
+            .price-container li {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            .price-container li {
+                font-size: 0.85rem;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <br />
-          <center>
-            <img
-              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjcwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MzggMTA3LjUxIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzQ3MGY0YTtmaWxsLXJ1bGU6ZXZlbm9kZDt9PC9zdHlsZT48L2RlZnM+PGcgaWQ9IkxheWVyXzIiIGRhdGEtbmFtZT0iTGF5ZXIgMiI+PGcgaWQ9IkxheWVyXzEtMiIgZGF0YS1uYW1lPSJMYXllciAxIj48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik01ODQuMjUsMEE1My43Niw1My43NiwwLDAsMSw2MzgsNTMuNzVsLTUzLjc1LDUzLjc2QTUzLjc2LDUzLjc2LDAsMCwwLDYzOCw1My43NUw1ODQuMjUsMFpNNTY3Ljc4LDEwNC45M0E1My45Myw1My45MywwLDAsMSw1MzcuNDQsODAuMmg1NS4wN2wtMjQuNzMsMjQuNzNaTTUzMi4xNyw2Ny4xMmE1NCw1NCwwLDAsMSwwLTI2LjczaDczLjQyTDYxOSw1My43NSw2MDUuNTksNjcuMTJabTUuMjctMzkuODJBNTQsNTQsMCwwLDEsNTY3Ljc4LDIuNTdMNTkyLjUxLDI3LjNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDQuMTMsNzkuODJWNjYuNDdIMTQuNzlWMTYuMDhIMFY3OS44MlptNjMtMjUuNjVWNTRhMjUuNzQsMjUuNzQsMCwwLDAtMi4xMS0xMC40MiwyNi40MywyNi40MywwLDAsMC01LjgxLTguNDYsMjcsMjcsMCwwLDAtOC43OS01LjY2LDMwLjUsMzAuNSwwLDAsMC0yMi4xOSwwLDI3Ljc4LDI3Ljc4LDAsMCwwLTguODQsNS43NywyNi40MywyNi40MywwLDAsMC01Ljg2LDguNSwyNS43OCwyNS43OCwwLDAsMC0yLjExLDEwLjQydi4xOWEyNS43NCwyNS43NCwwLDAsMCwyLjExLDEwLjQyLDI2LjQzLDI2LjQzLDAsMCwwLDUuODEsOC40NiwyNywyNywwLDAsMCw4Ljc5LDUuNjYsMjkuMDksMjkuMDksMCwwLDAsMTEsMi4wNywyOC43NSwyOC43NSwwLDAsMCwxMS4xNC0yLjExLDI3LjY3LDI3LjY3LDAsMCwwLDguODQtNS43NywyNi40MywyNi40MywwLDAsMCw1Ljg2LTguNSwyNS43OCwyNS43OCwwLDAsMCwyLjExLTEwLjQyWm0tMTQuNDEuMTlhMTYsMTYsMCwwLDEtLjkxLDUuNDMsMTMuMzYsMTMuMzYsMCwwLDEtMi42NCw0LjQ3LDEyLjMzLDEyLjMzLDAsMCwxLTQuMTgsMywxMy40OSwxMy40OSwwLDAsMS01LjYyLDEuMTEsMTIuNzcsMTIuNzcsMCwwLDEtNS41Mi0xLjE2LDEzLjcyLDEzLjcyLDAsMCwxLTcuMDYtNy42MywxNS4yOCwxNS4yOCwwLDAsMS0xLTUuNDNWNTRhMTYsMTYsMCwwLDEsLjkxLTUuNDMsMTMuNDYsMTMuNDYsMCwwLDEsMi42NC00LjQ3LDEyLjMzLDEyLjMzLDAsMCwxLDQuMTgtM0ExMy40OSwxMy40OSwwLDAsMSw3OS4yMiw0MGExMi45MSwxMi45MSwwLDAsMSw1LjQ4LDEuMTZBMTMuNTksMTMuNTksMCwwLDEsODksNDQuMjNhMTMuNzksMTMuNzksMCwwLDEsMi43OCw0LjUxLDE1LjI4LDE1LjI4LDAsMCwxLDEsNS40M3YuMTlabTc4Ljc5LDEzLjgzVjI3LjU4SDE1N3Y3LjQ4YTM4LjM2LDM4LjM2LDAsMCwwLTcuODktNi41NGMtMTQuOC04LjUxLTMzLDUuNTYtMzMsMjIuODZ2LjJjMCwxMy41Miw5LjcxLDI0LDIzLjU1LDI0LDcuMzksMCwxMi45MS0yLjc1LDE3LjU2LTguMzZ2Mi41YzAsOS43MS01LjIzLDE1LjQ2LTE0LjcsMTUuNDYtNi41MywwLTExLjY5LTIuMDktMTcuMzgtNS4ybC01LDExYTQ5LjE1LDQ5LjE1LDAsMCwwLDIyLjc3LDUuODdjMTksMCwyOC43Mi05LDI4LjcyLTI4LjYyWm0tMTUtMTYuNjFjMCw3LjEyLTUuNzEsMTEuOTEtMTIuNzcsMTEuOTFzLTEzLjE4LTQuNjEtMTMuMTgtMTEuOTF2LS4yYTEzLDEzLDAsMCwxLDEyLjg2LTEzLDEzLjE3LDEzLjE3LDAsMCwxLDEzLjA5LDEzdi4yWm00Mi4zNCwyOC4yNFYyNy41OGgtMTQuNlY3OS44MlpNMjU5LDcxLjU2bC04LjU1LTguNjVhMTkuNTIsMTkuNTIsMCwwLDEtMTMuMDYsNS40OEMyMjkuMyw2OC4zOSwyMjQsNjEsMjI0LDUzLjN2LS4yYzAtNy4yNCw1LjE3LTE0LjQsMTIuODYtMTQuNGExNy42NywxNy42NywwLDAsMSwxMyw1LjY3bDguOTMtOS42Yy01LjY5LTYuMjktMTMuNDEtOC42NS0yMS44LTguNjVBMjcuMDUsMjcuMDUsMCwwLDAsMjA5LjU3LDUzLjN2LjE5QTI3LjQxLDI3LjQxLDAsMCwwLDIzNi43NSw4MUMyNDUuNjYsODEsMjUzLjA2LDc4LjEzLDI1OSw3MS41NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zMjYuMzksMzkuMzlWMzkuMmEyNC40OSwyNC40OSwwLDAsMC0xLjc3LTkuNDYsMjEsMjEsMCwwLDAtNS4wOS03LjM1LDIyLjkzLDIyLjkzLDAsMCwwLTguMDctNC43NkEzMi4zNywzMi4zNywwLDAsMCwzMDAuNjUsMTZIMjY5LjE4Vjc5LjgySDI4NFY2M2gxNS4yNGEzNi42NywzNi42NywwLDAsMCwxMC42MS0xLjQ5LDI1LjEyLDI1LjEyLDAsMCwwLDguNjUtNC40NywyMSwyMSwwLDAsMCw1LjgxLTcuMzksMjMuNTYsMjMuNTYsMCwwLDAsMi4xMS0xMC4yOFptLTE1LC4yOWE5LjYxLDkuNjEsMCwwLDEtMy4wOCw3LjI1Yy0yLDItNC45MywyLjkzLTguNjQsMi45M0gyODRWMjkuMzFIMjk5LjRxNS41OCwwLDguNzksMi41OXQzLjIyLDcuNTl2LjE5Wm0zOC40Myw0MC4xNFYxNC43aC0xNC42Vjc5LjgyWm02My4yOCwwVjI3LjUyaC0xNC42VjU3YzAsNi00LDExLjcyLTEwLjQxLDExLjcyLTcuNjMsMC0xMC41NS01Ljg0LTEwLjU1LTExLjcyVjI3LjUySDM2M1Y2MS42NmMwLDExLjIzLDguNjksMTkuMTIsMjAuNDgsMTkuMTIsNi42MywwLDExLjIxLTMuMiwxNS4wOC04LjMzdjcuMzdabTk1LjUyLDBWNDYuMjljMC0xMS4zNS04LjMzLTIwLjA4LTIwLjIzLTIwLjA4LTcsMC0xMi4zLDQtMTYuNzUsOS4zOS0yLjg5LTUuNzItMTAtOS4zOS0xNi4yMS05LjM5LTYuNywwLTExLjEyLDIuNDItMTQuNzgsNy44NlYyNy41MmgtMTQuNnY1Mi4zaDE0LjZWNTEuMTZjMC01LjgyLDEuODktMTIuMTksOS43MS0xMi4xOXM5LjU1LDYuNDYsOS41NSwxMi4xOVY3OS44MmgxNC42VjUxLjE2YzAtNS44MiwyLjI3LTEyLjE5LDEwLTEyLjE5UzQ5NCw0NS40Myw0OTQsNTEuMTZWNzkuODJaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTkxLjYyLDE5YTguNjgsOC42OCwwLDEsMC04LjY4LTguNjhBOC43LDguNywwLDAsMCwxOTEuNjIsMTlaIi8+PC9nPjwvZz48L3N2Zz4="
-            />
-          </center>
-          <br />
-          <h1>AICLOUD 4.0</h1>
-          <br />
-          <br />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-6 text-center">
-          <h2>AICloud Releases</h2>
-          <br />
+        <!-- Left Section: Form and Category Table -->
+        <div>
+            <h1>Item Count</h1>
 
-          <div class="release-box" id="newReleaseBoard">
-            <!-- New release notice board will be populated dynamically -->
-          </div>
-          <div class="col-lg-12">
-            <div class="release-box" id="previousReleases">
-              <h2>Previous DS Releases</h2>
-              <br />
-              <div id="previousReleasesList">
-                <!-- Table for previous releases will be populated dynamically -->
-              </div>
-            </div>
-          </div>
+            <form id="categoryForm">
+                <div>
+                    <label for="categoryName">Category Name:</label>
+                    <input type="text" id="categoryName" placeholder="Enter category name" required>
+                </div>
+                <div>
+                    <label for="categoryCount">Count:</label>
+                    <input type="number" id="categoryCount" placeholder="Enter count" required>
+                </div>
+                <button type="submit">Add Category</button>
+            </form>
 
-          <div class="release-box" id="beRelease">
-            <h2>Be Release</h2>
-            <br />
-            <div id="beReleaseList">
-              <!-- Be release details will be populated dynamically -->
-            </div>
-            <div class="pagination" id="beReleasePagination"></div><br><br>
-            <!-- <a href="testcase.html" class="btn-custom" >Add Error Test cases</a> -->
-  
-          </div>
-
-        </div>
-        <div class="col-lg-6 text-center">
-          <h2>Tasks Status</h2>
-          <br />
-          <div class="table-responsive">
-            <table class="table table-bordered task-table" id="taskTable">
-              <thead>
-                <tr>
-                  <th>Task</th>
-                  <th>Status</th>
-                  <th>Expected Date</th>
-                  <!-- Add more columns as needed -->
-                </tr>
-              </thead>
-              <tbody id="taskTableBody">
-                <!-- Table body will be populated dynamically -->
-              </tbody>
+            <h2>Category Totals</h2>
+            <table id="categoryTable">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Total Count</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamically populated rows will go here -->
+                </tbody>
             </table>
-          </div>
-          
+
+            <h3 id="totalPrice">Total Price: Rs 0</h3>
         </div>
-      </div>
+
+        <!-- Right Section: Price Input and Total Display -->
+        <div class="price-container">
+            <h3>Item Prices</h3>
+            <ul id="priceList">
+                <!-- Dynamically populated prices will go here -->
+            </ul>
+        </div>
     </div>
 
-    <!-- Bootstrap JS and jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <!-- Your JavaScript code here -->
     <script>
-      const csvUrl =
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vSzyxxd4HYNiAfHNdx40BVmp-Z9j8kSUDJFv09aXSHE3oL-4wa4UsXGRtwA599q36C7kR7zG8HhXfqN/pub?output=csv"; // Replace with your Google Sheets CSV link
+        // Initialize an empty object to store categories, counts, and prices
+        let categories = {};
 
-      fetch(csvUrl)
-        .then((response) => response.text())
-        .then((csvData) => {
-          const parsedData = Papa.parse(csvData, {
-            header: true,
-            dynamicTyping: true,
-          });
-          console.log(parsedData); // Log parsed data to check if CSV is properly parsed
-          displayTaskStatus(parsedData.data);
-          displayNewRelease(parsedData.data); // Display the new release by comparing dates
-          displayPreviousReleases(parsedData.data); // Display previous releases
-        })
-        .catch((error) => console.error("Error fetching data:", error));
+        // Function to update the category table
+        function updateCategoryTable() {
+            const tableBody = document.querySelector("#categoryTable tbody");
+            tableBody.innerHTML = '';  // Clear previous rows
+            let totalPrice = 0;  // Initialize total price
 
-      function displayTaskStatus(data) {
-        const taskTableBody = document.getElementById("taskTableBody");
-        taskTableBody.innerHTML = "";
+            // Loop through categories and create rows
+            for (const category in categories) {
+                const row = document.createElement('tr');
+                const categoryCell = document.createElement('td');
+                const countCell = document.createElement('td');
+                const priceCell = document.createElement('td');
+                const actionCell = document.createElement('td');
 
-        data.forEach((row) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-                    <td>${row["Task"]}</td>
-                    <td>${row["Status"]}</td>
-                    <td>${row["Expected Date"]}</td>
-                    <!-- Add more columns as needed -->
-                `;
-          taskTableBody.appendChild(tr);
-        });
-      }
+                categoryCell.textContent = category;
+                countCell.textContent = categories[category].count;
+                countCell.classList.add('count-cell');  // Add center alignment class
 
-      function displayNewRelease(data) {
-        const sortedData = data.sort((a, b) => {
-          // Assuming 'Release Date' is in the format 'MM/DD/YYYY'
-          const dateA = new Date(a["Release Date"]);
-          const dateB = new Date(b["Release Date"]);
-          return dateB - dateA; // Sorts dates in descending order
-        });
+                // Price calculation
+                const price = categories[category].price || 0;
+                priceCell.textContent = `Rs ${price * categories[category].count}`;
+                totalPrice += price * categories[category].count;
 
-        const latestRelease = sortedData.length > 0 ? sortedData[0] : null;
+                // Create increment and decrement buttons
+                const incrementBtn = document.createElement('button');
+                incrementBtn.textContent = '+';
+                incrementBtn.classList.add('btn-increment');
+                incrementBtn.addEventListener('click', function() {
+                    categories[category].count += 1;  // Increase count by 1
+                    updateCategoryTable();
+                });
 
-        const newReleaseBoard = document.getElementById("newReleaseBoard");
-        if (latestRelease) {
-          if (latestRelease["Link"]) {
-            newReleaseBoard.innerHTML = `
-                        <div class="release-box">
-                            <h2>New Release</h2><br>
-                            <p>Vesion: ${latestRelease["Version"]}</p><br>
-                            <p>PIP Pacakge Vesion: ${latestRelease["Package Version"]}</p><br>
-                            <p>Date: ${latestRelease["Release Date"]}</p>
-                            <p>Description: ${latestRelease["Code Updates"]}</p>
-                            <a href="${latestRelease["Link"]}" class="btn-custom" download-link" download>Download New Release</a>
-                        </div>
-                    `;
-          } else {
-            newReleaseBoard.innerHTML = `
-                        <div class="release-box">
-                            <h2>Upcoming Release</h2><br>
-                            <p>Date: ${latestRelease["Release Date"]}</p>
-                            <p>Description: ${latestRelease["Code Updates"]}</p>
-                            <p>Not deployed yet!</p>
-                            <p>Will be deployed soon</p>
-                        </div>
-                    `;
-          }
-        } else {
-          newReleaseBoard.innerHTML = `
-                    <div class="release-box">
-                        <h2>Upcoming Release</h2><br>
-                        <p>No new release available</p>
-                    </div>
-                `;
-        }
-      }
+                const decrementBtn = document.createElement('button');
+                decrementBtn.textContent = '-';
+                decrementBtn.classList.add('btn-decrement');
+                decrementBtn.addEventListener('click', function() {
+                    if (categories[category].count > 0) {
+                        categories[category].count -= 1;  // Decrease count by 1
+                        updateCategoryTable();
+                    }
+                });
 
-      function displayPreviousReleases(data) {
-        const previousReleasesList = document.getElementById(
-          "previousReleasesList"
-        );
+                actionCell.appendChild(incrementBtn);
+                actionCell.appendChild(decrementBtn);
 
-        if (!previousReleasesList) {
-          console.error("Previous Releases list element not found!");
-          return;
-        }
-
-        const sortedData = data.sort((a, b) => {
-          const dateA = new Date(a["Release Date"]);
-          const dateB = new Date(b["Release Date"]);
-          return dateB - dateA;
-        });
-
-        const table = document.createElement("table");
-        table.classList.add("table", "table-bordered");
-
-        const thead = document.createElement("thead");
-        const headRow = document.createElement("tr");
-        headRow.innerHTML = `<th>Date</th><th>Code Updates</th><th>Package Version</th><th>Version</th><th>Download</th>`;
-        thead.appendChild(headRow);
-        table.appendChild(thead);
-
-        const tbody = document.createElement("tbody");
-        for (let i = 1; i < sortedData.length; i++) {
-          const release = sortedData[i];
-          const releaseDates = release["Release Date"]
-            ? release["Release Date"]
-                .split(";")
-                .map((date) => date.trim())
-                .filter(Boolean)
-            : [];
-          releaseDates.forEach((date) => {
-            if (date && release["Code Updates"] && release["Link"]) {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                    <td >${date}</td>
-                    <td>${release["Code Updates"]}</td>
-                    <td>${release["Package Version"]}</td>
-                    <td>${release["Version"]}</td>
-                    <td><a href="${release["Link"]}" class="btn-custom" download><i class="fas fa-download"></i></a></td>
-                `;
-              tbody.appendChild(row);
+                row.appendChild(categoryCell);
+                row.appendChild(countCell);
+                row.appendChild(priceCell);
+                row.appendChild(actionCell);
+                tableBody.appendChild(row);
             }
-          });
+
+            // Update the total price
+            document.getElementById("totalPrice").textContent = `Total Price: Rs ${totalPrice}`;
         }
 
-        table.appendChild(tbody);
-        previousReleasesList.innerHTML = ""; // Clear the content before appending
-        previousReleasesList.appendChild(table);
+        // Function to update the price list on the right side
+        function updatePriceList() {
+            const priceList = document.getElementById('priceList');
+            priceList.innerHTML = ''; // Clear previous items
 
-        // Pagination logic for previous releases
-        const rowsPerPage = 2;
-        const totalRows = tbody.children.length;
-        const pageCount = Math.ceil(totalRows / rowsPerPage);
-        let currentPage = 1;
+            for (const category in categories) {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${category}: `;
 
-        function showPage(pageNum) {
-          const start = (pageNum - 1) * rowsPerPage;
-          const end = Math.min(start + rowsPerPage, totalRows);
+                const priceInput = document.createElement('input');
+                priceInput.type = 'number';
+                priceInput.value = categories[category].price || 0;
+                priceInput.addEventListener('change', function() {
+                    categories[category].price = parseFloat(priceInput.value);
+                    updateCategoryTable();
+                });
 
-          for (let j = 0; j < totalRows; j++) {
-            if (j >= start && j < end) {
-              tbody.children[j].style.display = "table-row";
-            } else {
-              tbody.children[j].style.display = "none";
+                listItem.appendChild(priceInput);
+                priceList.appendChild(listItem);
             }
-          }
         }
 
-        function updatePagination() {
-          pageNumber.textContent = currentPage;
-          showPage(currentPage);
-        }
+        // Form submission logic
+        document.getElementById("categoryForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-        const pagination = document.createElement("div");
-        pagination.classList.add("pagination");
+            const categoryName = document.getElementById("categoryName").value;
+            const categoryCount = parseInt(document.getElementById("categoryCount").value);
 
-        const prevButton = document.createElement("button");
-        prevButton.innerHTML = "&larr;";
-        prevButton.addEventListener("click", function () {
-          if (currentPage > 1) {
-            currentPage--;
-            updatePagination();
-          }
+            if (categoryName && categoryCount >= 0) {
+                if (!categories[categoryName]) {
+                    categories[categoryName] = { count: categoryCount, price: 0 };
+                } else {
+                    categories[categoryName].count += categoryCount;
+                }
+
+                document.getElementById('categoryName').value = '';
+                document.getElementById('categoryCount').value = '';
+
+                updateCategoryTable();
+                updatePriceList();  // Also update price list on the right
+            }
         });
-        pagination.appendChild(prevButton);
-
-        const pageNumber = document.createElement("span");
-        pageNumber.textContent = currentPage;
-        pageNumber.classList.add("page-number");
-        pagination.appendChild(pageNumber);
-
-        const nextButton = document.createElement("button");
-        nextButton.innerHTML = "&rarr;";
-        nextButton.addEventListener("click", function () {
-          if (currentPage < pageCount) {
-            currentPage++;
-            updatePagination();
-          }
-        });
-        pagination.appendChild(nextButton);
-
-        previousReleasesList.innerHTML = ""; // Clear the content before appending
-        previousReleasesList.appendChild(table);
-        previousReleasesList.appendChild(pagination);
-
-        updatePagination(); // Show initial content and page number
-      }
-
-      function showPage(pageNum, rowsPerPage, totalRows, tbody) {
-        const start = (pageNum - 1) * rowsPerPage;
-        const end = Math.min(start + rowsPerPage, totalRows);
-
-        for (let j = 0; j < totalRows; j++) {
-          if (j >= start && j < end) {
-            tbody.children[j].style.display = "table-row";
-          } else {
-            tbody.children[j].style.display = "none";
-          }
-        }
-      }
-
-
-
-      function displayBeRelease(data) {
-    const beReleaseList = document.getElementById("beReleaseList");
-
-    if (!beReleaseList) {
-      console.error("Be Release list element not found!");
-      return;
-    }
-
-    const sortedData = data.sort((a, b) => {
-      const dateA = new Date(a["BERelease Date"]);
-      const dateB = new Date(b["BERelease Date"]);
-      return dateB - dateA;
-    });
-
-    const table = document.createElement("table");
-    table.classList.add("table", "table-bordered");
-
-    const thead = document.createElement("thead");
-    const headRow = document.createElement("tr");
-    headRow.innerHTML = `<th>Date</th><th>Code Updates</th>`;
-    thead.appendChild(headRow);
-    table.appendChild(thead);
-
-    const tbody = document.createElement("tbody");
-    for (let i = 0; i < sortedData.length; i++) {
-      const release = sortedData[i];
-      if (release["BECode Updates"]) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${release["BERelease Date"]}</td>
-          <td>${release["BECode Updates"]}</td>
-        `;
-        tbody.appendChild(row);
-      }
-    }
-
-    table.appendChild(tbody);
-    beReleaseList.innerHTML = ""; // Clear the content before appending
-    beReleaseList.appendChild(table);
-
-    // Pagination logic for Be Release
-    const rowsPerPage = 2;
-    const totalRows = tbody.children.length;
-    const pageCount = Math.ceil(totalRows / rowsPerPage);
-    let currentPage = 1;
-
-    function showBeReleasePage(pageNum) {
-      const start = (pageNum - 1) * rowsPerPage;
-      const end = Math.min(start + rowsPerPage, totalRows);
-
-      for (let j = 0; j < totalRows; j++) {
-        if (j >= start && j < end) {
-          tbody.children[j].style.display = "table-row";
-        } else {
-          tbody.children[j].style.display = "none";
-        }
-      }
-    }
-
-    function updateBeReleasePagination() {
-      beReleasePageNumber.textContent = currentPage;
-      showBeReleasePage(currentPage);
-    }
-
-    const beReleasePagination = document.createElement("div");
-    beReleasePagination.classList.add("pagination");
-
-    const prevButton = document.createElement("button");
-    prevButton.innerHTML = "&larr;";
-    prevButton.addEventListener("click", function () {
-      if (currentPage > 1) {
-        currentPage--;
-        updateBeReleasePagination();
-      }
-    });
-    beReleasePagination.appendChild(prevButton);
-
-    const beReleasePageNumber = document.createElement("span");
-    beReleasePageNumber.textContent = currentPage;
-    beReleasePageNumber.classList.add("page-number");
-    beReleasePagination.appendChild(beReleasePageNumber);
-
-    const nextButton = document.createElement("button");
-    nextButton.innerHTML = "&rarr;";
-    nextButton.addEventListener("click", function () {
-      if (currentPage < pageCount) {
-        currentPage++;
-        updateBeReleasePagination();
-      }
-    });
-    beReleasePagination.appendChild(nextButton);
-
-    beReleaseList.innerHTML = ""; // Clear the content before appending
-    beReleaseList.appendChild(table);
-    beReleaseList.appendChild(beReleasePagination);
-
-    updateBeReleasePagination(); // Show initial content and page number
-  }
-
-  // ... (Remaining JavaScript code remains unchanged) ...
-
-  // Fetching and processing data from the CSV URL
-  fetch(csvUrl)
-    .then((response) => response.text())
-    .then((csvData) => {
-      const parsedData = Papa.parse(csvData, {
-        header: true,
-        dynamicTyping: true,
-      });
-      console.log(parsedData); // Log parsed data to check if CSV is properly parsed
-      displayTaskStatus(parsedData.data);
-      displayNewRelease(parsedData.data);
-      displayPreviousReleases(parsedData.data);
-      displayBeRelease(parsedData.data); // Display the Be Release section
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-
-
-
-
     </script>
-  </body>
+</body>
 </html>
