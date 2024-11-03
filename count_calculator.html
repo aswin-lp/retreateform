@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Count</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --mobile-padding: 16px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container-fluid {
+            padding: var(--mobile-padding);
+            width: 100vw;
+            margin: 0;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .col-md-4 {
+            flex: 1 1 100%; /* Adjust to 100% width for all screen sizes */
+            min-width: 0; /* Prevent overflow issues */
+        }
+
+        .card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2, h3, h4 , h5{
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        form {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #00796b;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #005f57;
+            transform: translateY(-2px);
+        }
+
+        .price-container {
+            margin-top: 15px;
+        }
+
+        .price-container div {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .price-container div:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-increment, .btn-decrement {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-increment {
+            background-color: #28a745; /* Green color for increment */
+            color: white;
+        }
+
+        .btn-increment:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: translateY(-2px);
+        }
+
+        .btn-decrement {
+            background-color: #dc3545; /* Red color for decrement */
+            color: white;
+        }
+
+        .btn-decrement:hover {
+            background-color: #c82333; /* Darker red on hover */
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <h4>Add Items</h4>
+                    <form id="categoryForm">
+                        <div class="form-group">
+                            <label for="categoryName">Item Name:</label>
+                            <input type="text" id="categoryName" placeholder="Enter category name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryCount">Count:</label>
+                            <input type="number" id="categoryCount" placeholder="Enter count" required min="0">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit">Add Item</button>
+                            <button type="button" id="clearStorage">Clear All</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <h4>Total</h4>
+                    <table class="table table-striped" id="categoryTable">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Count</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamically populated rows will go here -->
+                        </tbody>
+                    </table>
+                    <h5 id="totalPrice">Total Price: Rs 0</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <h4>Item Prices</h4>
+                    <div class="price-container">
+                        <!-- Dynamically populated prices will go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize categories from local storage or as an empty object
+        let categories = JSON.parse(localStorage.getItem('categories')) || {};
+
+        // Function to update local storage
+        function updateLocalStorage() {
+            localStorage.setItem('categories', JSON.stringify(categories));
+        }
+
+        // Function to update the category table
+        function updateCategoryTable() {
+            const tableBody = document.querySelector("#categoryTable tbody");
+            tableBody.innerHTML = '';  // Clear previous rows
+            let totalPrice = 0;  // Initialize total price
+
+            // Loop through categories and create rows
+            for (const category in categories) {
+                const row = document.createElement('tr');
+                const categoryCell = document.createElement('td');
+                const countCell = document.createElement('td');
+                const priceCell = document.createElement('td');
+                const actionCell = document.createElement('td');
+
+                categoryCell.textContent = category;
+                countCell.textContent = categories[category].count;
+
+                // Price calculation
+                const price = categories[category].price || '';
+                priceCell.textContent = `${price * categories[category].count}`;
+                totalPrice += (price * categories[category].count);
+
+                // Create increment button
+                const incrementBtn = document.createElement('button');
+                incrementBtn.textContent = '+';
+                incrementBtn.classList.add('btn-increment', 'btn');
+                incrementBtn.style.marginRight = '5px'; // Add space to the right
+                incrementBtn.addEventListener('click', function() {
+                    categories[category].count += 1;  // Increase count by 1
+                    updateLocalStorage();
+                    updateCategoryTable();
+                });
+
+                // Create decrement button
+                const decrementBtn = document.createElement('button');
+                decrementBtn.textContent = '-';
+                decrementBtn.classList.add('btn-decrement', 'btn');
+                decrementBtn.addEventListener('click', function() {
+                    if (categories[category].count > 0) {
+                        categories[category].count -= 1;  // Decrease count by 1
+                        updateLocalStorage();
+                        updateCategoryTable();
+                    }
+                });
+
+                actionCell.appendChild(incrementBtn);
+                actionCell.appendChild(decrementBtn);
+
+                row.appendChild(categoryCell);
+                row.appendChild(countCell);
+                row.appendChild(priceCell);
+                row.appendChild(actionCell);
+                tableBody.appendChild(row);
+            }
+
+            // Update the total price
+            document.getElementById("totalPrice").textContent = `Total Price: Rs ${totalPrice}`;
+        }
+
+        // Function to update the price list on the right side
+        function updatePriceList() {
+            const priceContainer = document.querySelector('.price-container');
+            priceContainer.innerHTML = ''; // Clear previous items
+
+            for (const category in categories) {
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'price-item';
+
+                const categoryLabel = document.createElement('label');
+                categoryLabel.for = category;
+                categoryLabel.textContent = category + ': ';
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'number';
+                priceInput.placeholder = 'Enter price'; // No default value
+                priceInput.value = ''; // Start empty
+                priceInput.id = category;
+                priceInput.addEventListener('input', function() {
+                    categories[category].price = Number(priceInput.value);
+                    updateLocalStorage();
+                    updateCategoryTable();
+                });
+
+                priceDiv.appendChild(categoryLabel);
+                priceDiv.appendChild(priceInput);
+                priceContainer.appendChild(priceDiv);
+            }
+        }
+
+        // Form submission event
+        document.getElementById("categoryForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            const categoryName = document.getElementById("categoryName").value.trim();
+            const categoryCount = Number(document.getElementById("categoryCount").value);
+
+            // Add new category or update count if exists
+            if (categoryName && categoryCount >= 0) {
+                if (!categories[categoryName]) {
+                    categories[categoryName] = { count: categoryCount, price: 0 }; // Initialize price as 0
+                } else {
+                    categories[categoryName].count += categoryCount; // Increase existing count
+                }
+                updateLocalStorage(); // Save to local storage
+                updateCategoryTable(); // Refresh the table
+                updatePriceList(); // Refresh the price list
+            }
+
+            // Clear input fields
+            document.getElementById("categoryName").value = '';
+            document.getElementById("categoryCount").value = '';
+        });
+
+        // Clear all categories
+        document.getElementById("clearStorage").addEventListener("click", function() {
+            categories = {};
+            updateLocalStorage();
+            updateCategoryTable();
+            updatePriceList();
+        });
+
+        // Initial population of table and price list
+        updateCategoryTable();
+        updatePriceList();
+    </script>
+</body>
+</html>
