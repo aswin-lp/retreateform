@@ -1,329 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Count</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        :root {
-            --mobile-padding: 16px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Form</title>
+  
+  <!-- Import Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-database-compat.js"></script>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        .container-fluid {
-            padding: var(--mobile-padding);
-            width: 100vw;
-            margin: 0;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .col-md-4 {
-            flex: 1 1 100%; /* Adjust to 100% width for all screen sizes */
-            min-width: 0; /* Prevent overflow issues */
-        }
-
-        .card {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        h1, h2, h3, h4 , h5{
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        form {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        input[type="text"], input[type="number"] {
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 1rem;
-            width: 100%;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus, input[type="number"]:focus {
-            border-color: #00796b;
-            outline: none;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #00796b;
-            color: white;
-            font-size: 1rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        button:hover {
-            background-color: #005f57;
-            transform: translateY(-2px);
-        }
-
-        .price-container {
-            margin-top: 15px;
-        }
-
-        .price-container div {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .price-container div:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-increment, .btn-decrement {
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn-increment {
-            background-color: #28a745; /* Green color for increment */
-            color: white;
-        }
-
-        .btn-increment:hover {
-            background-color: #218838; /* Darker green on hover */
-            transform: translateY(-2px);
-        }
-
-        .btn-decrement {
-            background-color: #dc3545; /* Red color for decrement */
-            color: white;
-        }
-
-        .btn-decrement:hover {
-            background-color: #c82333; /* Darker red on hover */
-            transform: translateY(-2px);
-        }
-    </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #f4f4f4, #e1e1e1);
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #470f4a;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+    }
+    h2 {
+      color: #333;
+      margin-top: 0;
+      border-bottom: 2px solid #470f4a;
+      padding-bottom: 10px;
+      font-size: 1.5em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* Reduced spacing between form elements */
+    }
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #470f4a;
+    }
+    input[type="text"], input[type="radio"] {
+      margin-bottom: 5px; /* Reduced spacing for radio buttons */
+      cursor: pointer; /* Added pointer cursor for better UX */
+      padding: 10px; /* Added padding for a more professional look */
+      border: 2px solid #470f4a; /* Border color matching theme */
+      border-radius: 5px; /* Rounded corners for inputs */
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Soft shadow for depth */
+    }
+    input[type="radio"] {
+      margin-right: 5px; /* Space between radio button and label */
+    }
+    button {
+      background-color: #470f4a; /* Dark variant for button */
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border-radius: 5px; /* Rounded button */
+    }
+    button:hover {
+      background-color: #6c2e57; /* Lighter variant on hover */
+    }
+    a {
+      background-color: #470f4a; /* Dark variant for button */
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border-radius: 5px; /* Rounded button */
+    }
+    a:hover {
+      background-color: #6c2e57; /* Lighter variant on hover */
+    }
+    .report-section {
+      margin-top: 30px; /* Increased spacing for better separation */
+    }
+    .report-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px; /* Margin above table */
+    }
+    .report-table th, .report-table td {
+      border: 1px solid #ddd;
+      padding: 10px; /* Increased padding for readability */
+      text-align: left;
+    }
+    .report-table th {
+      background-color: #f2f2f2;
+      color: #470f4a; /* Heading color for table */
+    }
+    .breakfast-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0; /* Removed margin for cleaner look */
+    }
+    .breakfast-list li {
+      background: #f2f2f2;
+      margin: 5px 0; /* Added margin for items */
+      padding: 8px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <h4>Add Items</h4>
-                    <form id="categoryForm">
-                        <div class="form-group">
-                            <label for="categoryName">Item Name:</label>
-                            <input type="text" id="categoryName" placeholder="Enter category name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryCount">Count:</label>
-                            <input type="number" id="categoryCount" placeholder="Enter count" required min="0">
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <button type="submit">Add Item</button>
-                            <button type="button" id="clearStorage">Clear All</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <h4>Total</h4>
-                    <table class="table table-striped" id="categoryTable">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Count</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamically populated rows will go here -->
-                        </tbody>
-                    </table>
-                    <h5 id="totalPrice">Total Price: Rs 0</h5>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <h4>Item Prices</h4>
-                    <div class="price-container">
-                        <!-- Dynamically populated prices will go here -->
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <h1>RETREATE 2024</h1>
+  
+    <form id="travelForm">
+      <label>Name:</label>
+      <input type="text" id="name" required>
+      
+      <label>Who all will stay in office?</label>
+      <div>
+        <input type="radio" name="stayInOffice" value="Yes" required> Yes
+        <input type="radio" name="stayInOffice" value="No"> No
+      </div>
+      
+      <label>Any difficulty to reach before 5:15 am?</label>
+      <div>
+        <input type="radio" name="difficulty" value="Yes" required> Yes
+        <input type="radio" name="difficulty" value="No"> No
+      </div>
+      
+      <label>Do anyone need travel assistance from hostel to reach (for girls)?</label>
+      <div>
+        <input type="radio" name="assistance" value="Yes" required> Yes
+        <input type="radio" name="assistance" value="No"> No
+      </div>
+      
+      <label>Do anyone have travel sickness on bus?</label>
+      <div>
+        <input type="radio" name="sickness" value="Yes" required> Yes
+        <input type="radio" name="sickness" value="No"> No
+      </div>
+      
+      <label>Breakfast Menu:</label>
+      <div>
+        <input type="radio" name="breakfastMenu" value="Appam/Kadala" required> Appam/Kadala
+        <input type="radio" name="breakfastMenu" value="Puttu/Muttacurry"> Puttu/Muttacurry
+      </div>
+      
+      <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <div class="report-section">
+      <h2>Report</h2>
+     <button type="button" onclick="promptPassword()">View Report</button>
+      <div id="reportSection"></div>
     </div>
+  </div>
 
-    <script>
-        // Initialize categories from local storage or as an empty object
-        let categories = JSON.parse(localStorage.getItem('categories')) || {};
+  <div class="redirect">
+    <center><button type="button" onclick="goToReport()">Count Calculator</button></center>
+  </div>
+</div>
 
-        // Function to update local storage
-        function updateLocalStorage() {
-            localStorage.setItem('categories', JSON.stringify(categories));
-        }
+  <script>
 
-        // Function to update the category table
-        function updateCategoryTable() {
-            const tableBody = document.querySelector("#categoryTable tbody");
-            tableBody.innerHTML = '';  // Clear previous rows
-            let totalPrice = 0;  // Initialize total price
+    function goToReport() {
+        window.location.href = 'count_calculator.html';
+    }
 
-            // Loop through categories and create rows
-            for (const category in categories) {
-                const row = document.createElement('tr');
-                const categoryCell = document.createElement('td');
-                const countCell = document.createElement('td');
-                const priceCell = document.createElement('td');
-                const actionCell = document.createElement('td');
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCI8lJApo-hwV8pi0NNOk8C-jI2uOD2XZ8",
+      authDomain: "retreate2024.firebaseapp.com",
+      projectId: "retreate2024",
+      storageBucket: "retreate2024.firebasestorage.app",
+      messagingSenderId: "478852825906",
+      appId: "1:478852825906:web:1a45a36ff52fae63f60d2b",
+      databaseURL: "https://retreate2024-default-rtdb.firebaseio.com/"
+    };
 
-                categoryCell.textContent = category;
-                countCell.textContent = categories[category].count;
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-                // Price calculation
-                const price = categories[category].price || '';
-                priceCell.textContent = `${price * categories[category].count}`;
-                totalPrice += (price * categories[category].count);
+    function submitForm() {
+      const name = document.getElementById("name").value;
+      const stayInOffice = document.querySelector('input[name="stayInOffice"]:checked').value;
+      const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+      const assistance = document.querySelector('input[name="assistance"]:checked').value;
+      const sickness = document.querySelector('input[name="sickness"]:checked').value;
+      const breakfastMenu = document.querySelector('input[name="breakfastMenu"]:checked').value;
 
-                // Create increment button
-                const incrementBtn = document.createElement('button');
-                incrementBtn.textContent = '+';
-                incrementBtn.classList.add('btn-increment', 'btn');
-                incrementBtn.style.marginRight = '5px'; // Add space to the right
-                incrementBtn.addEventListener('click', function() {
-                    categories[category].count += 1;  // Increase count by 1
-                    updateLocalStorage();
-                    updateCategoryTable();
-                });
+      // Save data to Firebase
+      const newEntryRef = database.ref('travel-coordination').push();
 
-                // Create decrement button
-                const decrementBtn = document.createElement('button');
-                decrementBtn.textContent = '-';
-                decrementBtn.classList.add('btn-decrement', 'btn');
-                decrementBtn.addEventListener('click', function() {
-                    if (categories[category].count > 0) {
-                        categories[category].count -= 1;  // Decrease count by 1
-                        updateLocalStorage();
-                        updateCategoryTable();
-                    }
-                });
+      newEntryRef.set({
+        name: name,
+        stayInOffice: stayInOffice,
+        difficulty: difficulty,
+        assistance: assistance,
+        sickness: sickness,
+        breakfastMenu: breakfastMenu
+      }).then(() => {
+        alert("Form submitted successfully!");
+        document.getElementById("travelForm").reset();
+      }).catch((error) => {
+        console.error("Error submitting form:", error);
+      });
+    }
 
-                actionCell.appendChild(incrementBtn);
-                actionCell.appendChild(decrementBtn);
+    function promptPassword() {
+      const password = prompt("Enter password to view the report:");
+      if (password === "123") {
+        viewReport();
+      } else {
+        alert("Incorrect password. Please try again.");
+      }
+    }
 
-                row.appendChild(categoryCell);
-                row.appendChild(countCell);
-                row.appendChild(priceCell);
-                row.appendChild(actionCell);
-                tableBody.appendChild(row);
-            }
+    function viewReport() {
+  const reportSection = document.getElementById("reportSection");
+  reportSection.innerHTML = "";  // Clear previous report
 
-            // Update the total price
-            document.getElementById("totalPrice").textContent = `Total Price: Rs ${totalPrice}`;
-        }
+  const refPath = database.ref('travel-coordination');
+  refPath.once('value', (snapshot) => {
+    const data = snapshot.val();
+    if (!data) {
+      reportSection.innerHTML = "<p>No data available.</p>";
+      return;
+    }
 
-        // Function to update the price list on the right side
-        function updatePriceList() {
-            const priceContainer = document.querySelector('.price-container');
-            priceContainer.innerHTML = ''; // Clear previous items
+    const summary = {
+      stayInOffice: { yes: 0, no: 0 },
+      difficulty: { yes: 0, no: 0 },
+      assistance: { yes: 0, no: 0 },
+      sickness: { yes: 0, no: 0 },
+      breakfastChoices: {}
+    };
 
-            for (const category in categories) {
-                const priceDiv = document.createElement('div');
-                priceDiv.className = 'price-item';
+    Object.keys(data).forEach(key => {
+      const entry = data[key];
+      summary.stayInOffice[entry.stayInOffice.toLowerCase()]++;
+      summary.difficulty[entry.difficulty.toLowerCase()]++;
+      summary.assistance[entry.assistance.toLowerCase()]++;
+      summary.sickness[entry.sickness.toLowerCase()]++;
+      if (!summary.breakfastChoices[entry.breakfastMenu]) {
+        summary.breakfastChoices[entry.breakfastMenu] = [];
+      }
+      summary.breakfastChoices[entry.breakfastMenu].push(entry.name);
+    });
 
-                const categoryLabel = document.createElement('label');
-                categoryLabel.for = category;
-                categoryLabel.textContent = category + ': ';
-
-                const priceInput = document.createElement('input');
-                priceInput.type = 'number';
-                priceInput.placeholder = 'Enter price'; // No default value
-                priceInput.value = ''; // Start empty
-                priceInput.id = category;
-                priceInput.addEventListener('input', function() {
-                    categories[category].price = Number(priceInput.value);
-                    updateLocalStorage();
-                    updateCategoryTable();
-                });
-
-                priceDiv.appendChild(categoryLabel);
-                priceDiv.appendChild(priceInput);
-                priceContainer.appendChild(priceDiv);
-            }
-        }
-
-        // Form submission event
-        document.getElementById("categoryForm").addEventListener("submit", function(event) {
-            event.preventDefault();  // Prevent form submission
-
-            const categoryName = document.getElementById("categoryName").value.trim();
-            const categoryCount = Number(document.getElementById("categoryCount").value);
-
-            // Add new category or update count if exists
-            if (categoryName && categoryCount >= 0) {
-                if (!categories[categoryName]) {
-                    categories[categoryName] = { count: categoryCount, price: 0 }; // Initialize price as 0
-                } else {
-                    categories[categoryName].count += categoryCount; // Increase existing count
-                }
-                updateLocalStorage(); // Save to local storage
-                updateCategoryTable(); // Refresh the table
-                updatePriceList(); // Refresh the price list
-            }
-
-            // Clear input fields
-            document.getElementById("categoryName").value = '';
-            document.getElementById("categoryCount").value = '';
-        });
-
-        // Clear all categories
-        document.getElementById("clearStorage").addEventListener("click", function() {
-            categories = {};
-            updateLocalStorage();
-            updateCategoryTable();
-            updatePriceList();
-        });
-
-        // Initial population of table and price list
-        updateCategoryTable();
-        updatePriceList();
-    </script>
+    // Generate report HTML
+    let reportHtml = `
+      <table class="report-table">
+        <tr>
+          <th>Question</th>
+          <th>Yes Count</th>
+          <th>No Count</th>
+          <th>Yes Respondents</th>
+          <th>No Respondents</th>
+        </tr>
+        <tr>
+          <td>Who will stay in office?</td>
+          <td>${summary.stayInOffice.yes}</td>
+          <td>${summary.stayInOffice.no}</td>
+          <td>${Object.keys(data).filter(d => data[d].stayInOffice === 'Yes').map(d => data[d].name).join(', ')}</td>
+          <td>${Object.keys(data).filter(d => data[d].stayInOffice === 'No').map(d => data[d].name).join(', ')}</td>
+        </tr>
+        <tr>
+          <td>Any difficulty to reach before 5:15 am?</td>
+          <td>${summary.difficulty.yes}</td>
+          <td>${summary.difficulty.no}</td>
+          <td>${Object.keys(data).filter(d => data[d].difficulty === 'Yes').map(d => data[d].name).join(', ')}</td>
+          <td>${Object.keys(data).filter(d => data[d].difficulty === 'No').map(d => data[d].name).join(', ')}</td>
+        </tr>
+        <tr>
+          <td>Need travel assistance from hostel?</td>
+          <td>${summary.assistance.yes}</td>
+          <td>${summary.assistance.no}</td>
+          <td>${Object.keys(data).filter(d => data[d].assistance === 'Yes').map(d => data[d].name).join(', ')}</td>
+          <td>${Object.keys(data).filter(d => data[d].assistance === 'No').map(d => data[d].name).join(', ')}</td>
+        </tr>
+        <tr>
+          <td>Travel sickness on bus?</td>
+          <td>${summary.sickness.yes}</td>
+          <td>${summary.sickness.no}</td>
+          <td>${Object.keys(data).filter(d => data[d].sickness === 'Yes').map(d => data[d].name).join(', ')}</td>
+          <td>${Object.keys(data).filter(d => data[d].sickness === 'No').map(d => data[d].name).join(', ')}</td>
+        </tr>
+      </table>
+      <h3>Breakfast Preferences</h3>
+      <ul class="breakfast-list">
+        ${Object.keys(summary.breakfastChoices).map(menu => `
+          <li>${menu}: ${summary.breakfastChoices[menu].join(', ')}</li>
+        `).join('')}
+      </ul>
+    `;
+    reportSection.innerHTML = reportHtml;
+  });
+}
+  </script>
 </body>
 </html>
