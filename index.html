@@ -149,9 +149,18 @@
       
       <label>Breakfast Menu:</label>
       <div>
-        <input type="radio" name="breakfastMenu" value="Appam/Kadala" required> Appam/Kadala
-        <input type="radio" name="breakfastMenu" value="Puttu/Muttacurry"> Puttu/Muttacurry
+        <input type="radio" name="breakfastMenu" value="Appam/VegStew" required> Appam/VegStew
+        <input type="radio" name="breakfastMenu" value="Appam/ChickenCurry"> Appam/ChickenCurry
       </div>
+
+      <label>Alcohol Preference:</label>
+      <div>
+        <input type="radio" name="alcohol" value="Whiskey" required> Whiskey
+        <input type="radio" name="alcohol" value="Brandy"> Brandy
+        <input type="radio" name="alcohol" value="Rum"> Rum
+        <input type="radio" name="alcohol" value="Vodka"> Vodka
+      </div>
+
       
       <button type="button" onclick="submitForm()">Submit</button>
     </form>
@@ -196,6 +205,8 @@
       const assistance = document.querySelector('input[name="assistance"]:checked').value;
       const sickness = document.querySelector('input[name="sickness"]:checked').value;
       const breakfastMenu = document.querySelector('input[name="breakfastMenu"]:checked').value;
+      const alcoholMenu = document.querySelector('input[name="alcohol"]:checked').value;
+
 
       // Save data to Firebase
       const newEntryRef = database.ref('travel-coordination').push();
@@ -206,7 +217,8 @@
         difficulty: difficulty,
         assistance: assistance,
         sickness: sickness,
-        breakfastMenu: breakfastMenu
+        breakfastMenu: breakfastMenu,
+        alcoholMenu: alcoholMenu
       }).then(() => {
         alert("Form submitted successfully!");
         document.getElementById("travelForm").reset();
@@ -224,37 +236,59 @@
       }
     }
 
-    function viewReport() {
-  const reportSection = document.getElementById("reportSection");
-  reportSection.innerHTML = "";  // Clear previous report
+   function viewReport() {
+    const reportSection = document.getElementById("reportSection");
+    reportSection.innerHTML = "";  // Clear previous report
 
-  const refPath = database.ref('travel-coordination');
-  refPath.once('value', (snapshot) => {
-    const data = snapshot.val();
-    if (!data) {
-      reportSection.innerHTML = "<p>No data available.</p>";
-      return;
-    }
-
-    const summary = {
-      stayInOffice: { yes: 0, no: 0 },
-      difficulty: { yes: 0, no: 0 },
-      assistance: { yes: 0, no: 0 },
-      sickness: { yes: 0, no: 0 },
-      breakfastChoices: {}
-    };
-
-    Object.keys(data).forEach(key => {
-      const entry = data[key];
-      summary.stayInOffice[entry.stayInOffice.toLowerCase()]++;
-      summary.difficulty[entry.difficulty.toLowerCase()]++;
-      summary.assistance[entry.assistance.toLowerCase()]++;
-      summary.sickness[entry.sickness.toLowerCase()]++;
-      if (!summary.breakfastChoices[entry.breakfastMenu]) {
-        summary.breakfastChoices[entry.breakfastMenu] = [];
+    const refPath = database.ref('travel-coordination');
+    refPath.once('value', (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        reportSection.innerHTML = "<p>No data available.</p>";
+        return;
       }
-      summary.breakfastChoices[entry.breakfastMenu].push(entry.name);
-    });
+
+      const summary = {
+        stayInOffice: { yes: 0, no: 0 },
+        difficulty: { yes: 0, no: 0 },
+        assistance: { yes: 0, no: 0 },
+        sickness: { yes: 0, no: 0 },
+        breakfastChoices: {},
+        alcoholChoices: {}
+      };
+
+      Object.keys(data).forEach(key => {
+        const entry = data[key];
+        summary.stayInOffice[entry.stayInOffice.toLowerCase()]++;
+        summary.difficulty[entry.difficulty.toLowerCase()]++;
+        summary.assistance[entry.assistance.toLowerCase()]++;
+        summary.sickness[entry.sickness.toLowerCase()]++;
+        
+        // Check if alcoholMenu exists before incrementing count
+        if (entry.alcoholMenu) {
+          summary.alcoholChoices[entry.alcoholMenu] = (summary.alcoholChoices[entry.alcoholMenu] || 0) + 1;
+        }
+        
+        if (!summary.breakfastChoices[entry.breakfastMenu]) {
+          summary.breakfastChoices[entry.breakfastMenu] = [];
+        }
+        summary.breakfastChoices[entry.breakfastMenu].push(entry.name);
+      });
+
+      // Find the most voted alcohol preference
+      let majorityAlcohol = null;
+      let maxCount = 0;
+      Object.entries(summary.alcoholChoices).forEach(([alcohol, count]) => {
+        if (count > maxCount) {
+          majorityAlcohol = alcohol;
+          maxCount = count;
+        }
+      });
+
+      // Calculate percentage
+      const totalEntries = Object.keys(data).length;
+      const majorityPercentage = totalEntries > 0 ? ((maxCount / totalEntries) * 100).toFixed(2) : 0;
+
 
     // Generate report HTML
     let reportHtml = `
@@ -301,6 +335,10 @@
           <li>${menu}: ${summary.breakfastChoices[menu].join(', ')}</li>
         `).join('')}
       </ul>
+
+      <h3>Alcohol Preference:</h3>
+      <p>Most voted brand: ${majorityAlcohol || 'N/A'} (${majorityPercentage}%)</p>
+
     `;
     reportSection.innerHTML = reportHtml;
   });
